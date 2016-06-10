@@ -2,7 +2,7 @@
 	Forked from https://github.com/samuell/glow
 */
 
-package main
+package modules
 
 import (
 	"bufio"
@@ -22,7 +22,7 @@ func (printer *Printer) LineNotifChan() chan int {
 	return printer.LineNotif
 }
 
-func (printer *Printer) Init() {
+func (printer *Printer) Start() {
 	go func() {
 		w := bufio.NewWriter(os.Stdout)
 		for line := range printer.In {

@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"log"
+
+	"github.com/latotty/lolcat/modules"
 )
 
 type inputTypeEnum int
@@ -45,22 +47,22 @@ func parseArgs(config *configStruct) {
 
 func start(config *configStruct) {
 	// Create components, connecting the channels
-	printer := new(Printer)
-	wrapper := new(Wrapper)
+	printer := modules.Printer{}
+	wrapper := modules.Wrapper{Width: config.wrapWidth}
 
 	var input interface {
-		Init()
+		Start()
 		OutChan() chan []byte
 	}
 
 	switch config.inputType {
 	case inputTypeFile:
-		fileReader := new(FileReader)
-		fileReader.InFilePath = make(chan string, 1) // buffered so the insert wont block
+		fileReader := modules.FileReader{}
+		fileReader.InFilePath = make(chan string, 1) // buffered so the next insert won't block
 		fileReader.InFilePath <- config.filePath
-		input = fileReader
+		input = &fileReader
 	default:
-		input = new(StdInReader)
+		input = &modules.StdInReader{}
 	}
 
 	// Connect them
@@ -68,9 +70,9 @@ func start(config *configStruct) {
 	printer.In = wrapper.OutChan()
 
 	// Start them
-	input.Init()
-	wrapper.Init(config.wrapWidth)
-	printer.Init()
+	input.Start()
+	wrapper.Start()
+	printer.Start()
 
 	// Wait until the end
 	for range printer.LineNotifChan() {

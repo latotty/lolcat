@@ -2,7 +2,7 @@
 	Forked from https://github.com/samuell/glow
 */
 
-package main
+package modules
 
 import (
 	"bufio"
@@ -21,7 +21,7 @@ func (fileReader *FileReader) OutChan() chan []byte {
 	return fileReader.Out
 }
 
-func (fileReader *FileReader) Init() {
+func (fileReader *FileReader) Start() {
 	go func() {
 		file, err := os.Open(<-fileReader.InFilePath)
 		if err != nil {

@@ -2,7 +2,7 @@
 	Forked from https://github.com/samuell/glow
 */
 
-package main
+package modules
 
 import (
 	"bufio"
@@ -18,7 +18,7 @@ func (self *StdInReader) OutChan() chan []byte {
 	return self.Out
 }
 
-func (self *StdInReader) Init() {
+func (self *StdInReader) Start() {
 	go func() {
 		scan := bufio.NewScanner(os.Stdin)
 		for scan.Scan() {

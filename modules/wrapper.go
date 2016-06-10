@@ -1,4 +1,4 @@
-package main
+package modules
 
 // Wrapper wraps the stream if the line is too long
 type Wrapper struct {
@@ -14,14 +14,13 @@ func (wrapper *Wrapper) OutChan() chan []byte {
 }
 
 // Init inits the wrapper
-func (wrapper *Wrapper) Init(width int) {
-	wrapper.Width = width
+func (wrapper *Wrapper) Start() {
 	go func() {
 		for line := range wrapper.In {
-			if width != 0 {
-				for len(line) > width {
-					wrapper.Out <- append([]byte(nil), line[:width]...)
-					line = line[width:]
+			if wrapper.Width != 0 {
+				for len(line) > wrapper.Width {
+					wrapper.Out <- append([]byte(nil), line[:wrapper.Width]...)
+					line = line[wrapper.Width:]
 				}
 			}
 			wrapper.Out <- append([]byte(nil), line...)
